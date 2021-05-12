@@ -7,7 +7,7 @@ export default function NewTransection() {
     : [];
   const [type, setType] = useState("Credit");
   const [amount, setAmount] = useState(0);
-  const [descciption, setDescription] = useState("");
+  const [descciption, setDescription] = useState("-");
   const [total, setTotal] = useState(
     allTransections.length !== 0
       ? parseFloat(allTransections[allTransections.length - 1].total)
@@ -22,19 +22,33 @@ export default function NewTransection() {
   const saveHandler = () => {
     console.log(type, amount, descciption);
     if (amount === 0) {
-      alert("Type valid amount");
+      return alert("Type valid amount");
     }
+
+    if (isNaN(amount)) {
+      return alert("Please type a valid number");
+    }
+
     // if (type === "Credit") {
     //   setTotal(total + parseFloat(amount));
     // }
     type === "Credit"
       ? setTotal(total + parseFloat(amount), () => console.log(amount))
       : setTotal(total - parseFloat(amount), () => console.log(amount));
+
     window.location.reload();
   };
+
   useEffect(() => {
     // console.log(parseFloat(allTransections[allTransections.length - 1].amount));
     const transaction = { type, amount, descciption, date, total };
+    if (
+      transaction.type === "Debit" &&
+      transactions[transactions.length - 1].total - transaction.amount < 0
+    ) {
+      console.log(amount, total);
+      return alert("Running balance is less");
+    }
     console.log(transaction);
     amount !== 0 && setTransection([...transactions, transaction]);
   }, [total]);
@@ -47,7 +61,7 @@ export default function NewTransection() {
     <div>
       <p style={{ fontSize: "20px", minWidth: "80vh" }}>New Transaction</p>
       <div>
-        <label for="transaction" style={{ minWidth: "20vh" }}>
+        <label htmlFor="transaction" style={{ minWidth: "20vh" }}>
           Transaction Type :
         </label>
         <select
@@ -67,12 +81,12 @@ export default function NewTransection() {
         </select>
       </div>
       <div>
-        <level
-          for="amount"
+        <label
+          htmlFor="amount"
           style={{ display: "inline-block", minWidth: "20vh" }}
         >
           Amount :
-        </level>
+        </label>
         <input
           type="text"
           id="amount"
@@ -85,15 +99,15 @@ export default function NewTransection() {
         />
       </div>
       <div>
-        <level
-          for="description"
+        <label
+          htmlFor="description"
           style={{
             display: "inline-block",
             minWidth: "20vh",
           }}
         >
           Description :
-        </level>
+        </label>
         <textarea
           id="textarea"
           name="textarea"

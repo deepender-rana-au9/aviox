@@ -5,6 +5,7 @@ import { Modal } from "react-responsive-modal";
 
 import TableRow from "./TableRows";
 import NewTransection from "./NewTransection";
+import { v4 } from "uuid";
 
 const data = localStorage.getItem("data")
   ? JSON.parse(localStorage.getItem("data"))
@@ -14,7 +15,7 @@ const List = () => {
   const [open, setOpen] = useState(false);
   const onOpenModal = () => setOpen(true);
   const onCloseModal = () => setOpen(false, window.location.reload());
-  const newArr = data.slice(0).reverse();
+  const newArr = data.slice().reverse();
   console.log(newArr);
 
   const resetHandler = () => {
@@ -57,15 +58,20 @@ const List = () => {
           </tr>
           <TableRow />
 
-          {newArr.map((item) => (
-            <tr>
-              <td>{item.date}</td>
-              <td key="name">{item.descciption}</td>
-              <td key="Credit">{item.type === "Credit" ? item.amount : "-"}</td>
-              <td key="Debit">{item.type === "Debit" ? item.amount : "-"}</td>
-              <td>{item.total}</td>
-            </tr>
-          ))}
+          {newArr.map((item) => {
+            const id = v4();
+            return (
+              <tr key={id}>
+                <td key="date">{item.date}</td>
+                <td key="des">{item.descciption}</td>
+                <td key="Credit">
+                  {item.type === "Credit" ? item.amount : "-"}
+                </td>
+                <td key="Debit">{item.type === "Debit" ? item.amount : "-"}</td>
+                <td key="total">{item.total}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </Table>
       <Modal open={open} onClose={onCloseModal} center>
